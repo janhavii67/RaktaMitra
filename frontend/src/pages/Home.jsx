@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,10 +15,19 @@ import {
   FaWarehouse
 } from 'react-icons/fa';
 import ImageSlider from '../components/ImageSlider';
+import MaharashtraMapNew from '../components/MaharashtraMapNew';
+import DistrictModal from '../components/DistrictModal';
+import useBloodData from '../hooks/useBloodData';
 import '../styles/home.css';
 
 export default function Home() {
   const { t } = useTranslation();
+  const { districtData, loading: bloodLoading } = useBloodData();
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+
+  const handleDistrictSelect = (districtName) => {
+    setSelectedDistrict(districtName);
+  };
 
   // Sample slider slides with images from public folder
   const sliderSlides = [
@@ -59,8 +68,11 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-visual">
-            <div className="hero-visual-circle">
-              <FaTint />
+            <div className="hero-map-wrapper">
+              <MaharashtraMapNew
+                districtData={districtData}
+                onDistrictClick={handleDistrictSelect}
+              />
             </div>
           </div>
         </div>
@@ -164,6 +176,13 @@ export default function Home() {
           </a>
         </div>
       </section>
+      {/* District Blood Availability Modal */}
+      {selectedDistrict && (
+        <DistrictModal
+          districtName={selectedDistrict}
+          onClose={() => setSelectedDistrict(null)}
+        />
+      )}
     </>
   );
 }

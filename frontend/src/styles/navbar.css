@@ -1,3 +1,5 @@
+/* ── Topbar ──────────────────────────────────────────────────────────── */
+
 .topbar {
   background-color: var(--color-red-dark);
   color: var(--color-white);
@@ -15,17 +17,22 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .topbar-left span {
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .topbar a {
   color: var(--color-white);
 }
+
+/* ── Navbar Shell ────────────────────────────────────────────────────── */
 
 .navbar {
   background-color: var(--color-white);
@@ -41,13 +48,19 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
+  gap: 12px;           /* space between brand / links / emergency */
+  flex-wrap: nowrap;   /* never let the row break */
 }
+
+/* ── Brand ───────────────────────────────────────────────────────────── */
 
 .navbar-brand {
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  flex-shrink: 0;      /* brand never shrinks away */
+  min-width: 0;
 }
 
 .navbar-brand:hover {
@@ -72,25 +85,38 @@
   margin: 0;
   color: var(--color-text);
   line-height: 1.1;
+  white-space: nowrap;
 }
 
 .navbar-brand-text span {
   font-size: 0.72rem;
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
+
+/* ── Nav Links ───────────────────────────────────────────────────────── */
 
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 22px;
+  flex-wrap: nowrap;         /* links NEVER wrap to a new row */
+  gap: clamp(8px, 1.2vw, 20px);   /* fluid: shrinks on smaller screens */
+  flex: 1 1 auto;            /* take available space between brand & emergency */
+  justify-content: center;   /* center the links in available space */
+  min-width: 0;
+  overflow: visible;
 }
 
 .navbar-links a {
   color: var(--color-text);
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: clamp(0.78rem, 0.85vw, 0.92rem); /* fluid font — never forced wrap */
   padding: 6px 2px;
   border-bottom: 2px solid transparent;
+  white-space: nowrap;      /* KEY FIX: each link always stays on one line */
+  text-decoration: none;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .navbar-links a:hover,
@@ -100,22 +126,28 @@
   text-decoration: none;
 }
 
+/* ── Emergency Button ────────────────────────────────────────────────── */
+
 .navbar-actions {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;      /* never squish the emergency button */
 }
 
 .navbar-emergency {
   background-color: var(--color-emergency);
   color: var(--color-white);
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
 .navbar-emergency:hover {
@@ -123,17 +155,54 @@
   text-decoration: none;
 }
 
+/* ── Hamburger Toggle ────────────────────────────────────────────────── */
+
 .navbar-toggle {
   display: none;
   background: none;
   border: none;
   font-size: 1.6rem;
   color: var(--color-text);
+  flex-shrink: 0;
 }
 
-@media (max-width: 992px) {
+/* ── Mid breakpoint: tighten spacing before going to hamburger ───────── */
+/*    At 1100px English labels like "How It Works" start to squeeze       */
+
+@media (max-width: 1100px) {
+  .navbar-brand-text span {
+    display: none;          /* hide the tagline to save horizontal space */
+  }
+
+  .navbar-links {
+    gap: clamp(6px, 0.8vw, 14px);
+  }
+
+  .navbar-links a {
+    font-size: 0.82rem;
+  }
+
+  .navbar-emergency {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ── Hamburger menu: ≤ 960px ─────────────────────────────────────────── */
+
+@media (max-width: 960px) {
   .navbar-toggle {
     display: block;
+  }
+
+  .navbar .container {
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  /* Restore full brand on mobile (tagline still hidden for space) */
+  .navbar-brand-text span {
+    display: none;
   }
 
   .navbar-links {
@@ -149,6 +218,15 @@
     border-bottom: 3px solid var(--color-saffron);
     box-shadow: var(--shadow-md);
     display: none;
+    flex-wrap: wrap;          /* mobile: wrapping is fine */
+    justify-content: flex-start;
+    z-index: 999;
+  }
+
+  .navbar-links a {
+    font-size: 1rem;           /* bigger tap targets on mobile */
+    white-space: nowrap;
+    padding: 6px 4px;
   }
 
   .navbar-links.open {
@@ -161,5 +239,25 @@
 
   .topbar-left span:nth-child(2) {
     display: none;
+  }
+}
+
+/* ── Small mobile: very narrow screens ───────────────────────────────── */
+
+@media (max-width: 480px) {
+  .navbar-logo {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .navbar-brand-text h1 {
+    font-size: 1rem;
+  }
+
+  .navbar-emergency {
+    font-size: 0.75rem;
+    padding: 6px 8px;
+    gap: 4px;
   }
 }
